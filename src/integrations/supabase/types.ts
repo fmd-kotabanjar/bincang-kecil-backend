@@ -9,7 +9,223 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      digital_products_links: {
+        Row: {
+          created_at: string | null
+          id: number
+          is_published: boolean | null
+          link_produk: string
+          nama_produk: string
+          required_permission_key: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: never
+          is_published?: boolean | null
+          link_produk: string
+          nama_produk: string
+          required_permission_key: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: never
+          is_published?: boolean | null
+          link_produk?: string
+          nama_produk?: string
+          required_permission_key?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      generic_codes: {
+        Row: {
+          code_string: string
+          created_at: string | null
+          description: string | null
+          id: number
+          is_active: boolean | null
+          permissions_granted_json: Json
+        }
+        Insert: {
+          code_string: string
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          is_active?: boolean | null
+          permissions_granted_json: Json
+        }
+        Update: {
+          code_string?: string
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          is_active?: boolean | null
+          permissions_granted_json?: Json
+        }
+        Relationships: []
+      }
+      ide_produk: {
+        Row: {
+          created_at: string | null
+          deskripsi_konten: string | null
+          id: number
+          is_published: boolean | null
+          judul_konten: string
+          required_permission_key: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          deskripsi_konten?: string | null
+          id?: never
+          is_published?: boolean | null
+          judul_konten: string
+          required_permission_key: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          deskripsi_konten?: string | null
+          id?: never
+          is_published?: boolean | null
+          judul_konten?: string
+          required_permission_key?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          request_prompt_quota: number | null
+          role: string
+          updated_at: string | null
+          username: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id: string
+          request_prompt_quota?: number | null
+          role?: string
+          updated_at?: string | null
+          username: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          request_prompt_quota?: number | null
+          role?: string
+          updated_at?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
+      prompts: {
+        Row: {
+          created_at: string | null
+          deskripsi_konten: string | null
+          id: number
+          is_published: boolean | null
+          judul_konten: string
+          required_permission_key: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          deskripsi_konten?: string | null
+          id?: never
+          is_published?: boolean | null
+          judul_konten: string
+          required_permission_key: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          deskripsi_konten?: string | null
+          id?: never
+          is_published?: boolean | null
+          judul_konten?: string
+          required_permission_key?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_permissions: {
+        Row: {
+          granted_at: string | null
+          granted_by_code: string | null
+          id: number
+          permission_key: string
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string | null
+          granted_by_code?: string | null
+          id?: never
+          permission_key: string
+          user_id: string
+        }
+        Update: {
+          granted_at?: string | null
+          granted_by_code?: string | null
+          id?: never
+          permission_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_permissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_requests: {
+        Row: {
+          admin_notes: string | null
+          id: number
+          processed_at: string | null
+          request_text: string
+          requested_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          id?: never
+          processed_at?: string | null
+          request_text: string
+          requested_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          id?: never
+          processed_at?: string | null
+          request_text?: string
+          requested_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

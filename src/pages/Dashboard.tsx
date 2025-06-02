@@ -26,8 +26,8 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div>
-              <h1 className="text-xl font-semibold">BincangKecil Dashboard</h1>
-              <p className="text-sm text-gray-600">Welcome, {profile?.username}</p>
+              <h1 className="text-xl font-semibold">AI Kit Dashboard</h1>
+              <p className="text-sm text-gray-600">Selamat datang, {profile?.username}</p>
             </div>
             <div className="flex items-center space-x-4">
               {profile?.role === 'admin' && (
@@ -35,11 +35,11 @@ const Dashboard: React.FC = () => {
                   variant="outline"
                   onClick={() => navigate('/admin')}
                 >
-                  Admin Panel
+                  Panel Admin
                 </Button>
               )}
               <Button variant="outline" onClick={handleSignOut}>
-                Sign Out
+                Keluar
               </Button>
             </div>
           </div>
@@ -55,9 +55,9 @@ const Dashboard: React.FC = () => {
 
         <Tabs defaultValue="prompts" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="prompts">Prompts</TabsTrigger>
-            <TabsTrigger value="ideas">Product Ideas</TabsTrigger>
-            <TabsTrigger value="products">Digital Products</TabsTrigger>
+            <TabsTrigger value="prompts">Prompt</TabsTrigger>
+            <TabsTrigger value="ideas">Ide Produk</TabsTrigger>
+            <TabsTrigger value="products">Produk Digital</TabsTrigger>
           </TabsList>
           
           <TabsContent value="prompts">

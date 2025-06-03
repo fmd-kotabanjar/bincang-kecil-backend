@@ -22,17 +22,24 @@ const AccessibleIdeasList: React.FC = () => {
 
   const fetchIdeas = async () => {
     try {
+      console.log('Fetching ideas...');
       const { data, error } = await supabase
         .from('ide_produk')
         .select('*')
         .eq('is_published', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching ideas:', error);
+        throw error;
+      }
+
+      console.log('Ideas fetched successfully:', data?.length || 0, 'items');
       setIdeas(data || []);
     } catch (error: any) {
+      console.error('Failed to fetch ideas:', error);
       toast({
-        title: "Failed to load ideas",
+        title: "Gagal memuat ide produk",
         description: error.message,
         variant: "destructive"
       });
@@ -42,20 +49,20 @@ const AccessibleIdeasList: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading ideas...</div>;
+    return <div className="text-center py-8">Memuat ide produk...</div>;
   }
 
   if (ideas.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        No ideas available with your current permissions
+        Belum ada ide produk yang tersedia
       </div>
     );
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Product Ideas</h2>
+      <h2 className="text-2xl font-bold mb-6">Ide Produk</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {ideas.map((idea) => (
           <ContentCard

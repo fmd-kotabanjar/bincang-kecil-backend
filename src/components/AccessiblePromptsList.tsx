@@ -22,17 +22,24 @@ const AccessiblePromptsList: React.FC = () => {
 
   const fetchPrompts = async () => {
     try {
+      console.log('Fetching prompts...');
       const { data, error } = await supabase
         .from('prompts')
         .select('*')
         .eq('is_published', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching prompts:', error);
+        throw error;
+      }
+
+      console.log('Prompts fetched successfully:', data?.length || 0, 'items');
       setPrompts(data || []);
     } catch (error: any) {
+      console.error('Failed to fetch prompts:', error);
       toast({
-        title: "Failed to load prompts",
+        title: "Gagal memuat prompt",
         description: error.message,
         variant: "destructive"
       });
@@ -42,20 +49,20 @@ const AccessiblePromptsList: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading prompts...</div>;
+    return <div className="text-center py-8">Memuat prompt...</div>;
   }
 
   if (prompts.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        No prompts available with your current permissions
+        Belum ada prompt yang tersedia
       </div>
     );
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Available Prompts</h2>
+      <h2 className="text-2xl font-bold mb-6">Prompt yang Tersedia</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {prompts.map((prompt) => (
           <ContentCard

@@ -48,17 +48,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
         return;
       }
 
+      console.log('Profile data:', data);
       setProfile(data);
     } catch (error) {
       console.error('Error in fetchProfile:', error);
@@ -67,6 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchPermissions = async (userId: string) => {
     try {
+      console.log('Fetching permissions for user:', userId);
       const { data, error } = await supabase
         .from('user_permissions')
         .select('*')
@@ -77,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
+      console.log('Permissions data:', data);
       setPermissions(data || []);
     } catch (error) {
       console.error('Error in fetchPermissions:', error);
@@ -91,20 +95,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         
+        if (!mounted) return;
+
         setSession(session);
         setUser(session?.user || null);
 
         if (session?.user) {
-          // Use setTimeout to prevent potential deadlocks
+          // Use setTimeout to prevent potential issues with auth state changes
           setTimeout(() => {
-            fetchProfile(session.user.id);
-            fetchPermissions(session.user.id);
-          }, 0);
+            if (mounted) {
+              fetchProfile(session.user.id);
+              fetchPermissions(session.user.id);
+            }
+          }, 100);
         } else {
           setProfile(null);
           setPermissions([]);
@@ -115,30 +125,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session:', session?.user?.email);
-      setSession(session);
-      setUser(session?.user || null);
-      
-      if (session?.user) {
-        fetchProfile(session.user.id);
-        fetchPermissions(session.user.id);
-      }
-      
-      setLoading(false);
-    });
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setLoading(false);
+          return;
+        }
 
-    return () => subscription.unsubscribe();
+        console.log('Initial session:', session?.user?.email);
+        
+        if (!mounted) return;
+
+        setSession(session);
+        setUser(session?.user || null);
+        
+        if (session?.user) {
+          await fetchProfile(session.user.id);
+          await fetchPermissions(session.user.id);
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, username: string) => {
+    const redirectUrl = `${window.location.origin}/dashboard`;
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           username
-        }
+        },
+        emailRedirectTo: redirectUrl
       }
     });
 
@@ -163,6 +197,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
     
     console.log('Sign out successful');
+    setProfile(null);
+    setPermissions([]);
   };
 
   const value = {

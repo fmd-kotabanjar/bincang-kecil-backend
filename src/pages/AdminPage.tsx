@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,9 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
+import { Upload, Users, FileText, Lightbulb, Package } from 'lucide-react';
+import CSVTemplateDownload from '@/components/CSVTemplateDownload';
+import UserManagement from '@/components/UserManagement';
 
 const AdminPage: React.FC = () => {
   const { profile, isAdmin, adminLogout } = useAuth();
@@ -15,10 +19,8 @@ const AdminPage: React.FC = () => {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
 
-  // Check if user has admin access (either default admin or user with admin role)
   const hasAdminAccess = isAdmin || profile?.role === 'admin';
 
-  // Redirect if not admin
   React.useEffect(() => {
     if (!hasAdminAccess) {
       navigate('/admin-login');
@@ -106,29 +108,37 @@ const AdminPage: React.FC = () => {
 
   if (!hasAdminAccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Memuat...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-purple-900">
+        <div className="text-lg text-white">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-xl font-semibold">Panel Admin</h1>
-              <p className="text-sm text-gray-600">
-                {isAdmin ? 'Admin Default' : `Kelola konten dan pengguna - ${profile?.username}`}
-              </p>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
+                <Package className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Admin Panel
+                </h1>
+                <p className="text-sm text-gray-600">
+                  {isAdmin ? 'Default Admin' : `Content & User Management - ${profile?.username}`}
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Button
                 variant="outline"
                 onClick={handleLogout}
+                className="border-blue-200 hover:bg-blue-50"
               >
-                {isAdmin ? 'Keluar Admin' : 'Kembali ke Dashboard'}
+                {isAdmin ? 'Exit Admin' : 'Back to Dashboard'}
               </Button>
             </div>
           </div>
@@ -137,36 +147,55 @@ const AdminPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="prompts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="prompts">Upload Prompt</TabsTrigger>
-            <TabsTrigger value="ideas">Upload Ide Produk</TabsTrigger>
-            <TabsTrigger value="products">Upload Produk Digital</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 bg-white/50 backdrop-blur-sm">
+            <TabsTrigger value="prompts" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Prompts
+            </TabsTrigger>
+            <TabsTrigger value="ideas" className="flex items-center gap-2">
+              <Lightbulb className="w-4 h-4" />
+              Ideas
+            </TabsTrigger>
+            <TabsTrigger value="products" className="flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              Products
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Users
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="prompts">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload Prompt dari CSV</CardTitle>
+            <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="w-5 h-5" />
+                  Upload Prompts from CSV
+                </CardTitle>
                 <CardDescription>
-                  Format CSV: judul_konten, deskripsi_konten, required_permission_key, is_published
+                  Format: judul_konten, deskripsi_konten, required_permission_key, is_published
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <CSVTemplateDownload type="prompts" />
+                  </div>
                   <div>
-                    <Label htmlFor="prompts-csv">File CSV Prompt</Label>
+                    <Label htmlFor="prompts-csv" className="text-sm font-medium">CSV File</Label>
                     <Input
                       id="prompts-csv"
                       type="file"
                       accept=".csv"
                       onChange={(e) => handleFileChange(e, 'prompts')}
                       disabled={uploading}
-                      className="mt-1"
+                      className="mt-2 border-blue-200 focus:border-blue-400"
                     />
                   </div>
                   {uploading && (
-                    <div className="text-sm text-gray-600">
-                      Mengupload dan memproses file...
+                    <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
+                      Uploading and processing file...
                     </div>
                   )}
                 </div>
@@ -175,29 +204,35 @@ const AdminPage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="ideas">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload Ide Produk dari CSV</CardTitle>
+            <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="w-5 h-5" />
+                  Upload Product Ideas from CSV
+                </CardTitle>
                 <CardDescription>
-                  Format CSV: judul_konten, deskripsi_konten, required_permission_key, is_published
+                  Format: judul_konten, deskripsi_konten, required_permission_key, is_published
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <CSVTemplateDownload type="ideas" />
+                  </div>
                   <div>
-                    <Label htmlFor="ideas-csv">File CSV Ide Produk</Label>
+                    <Label htmlFor="ideas-csv" className="text-sm font-medium">CSV File</Label>
                     <Input
                       id="ideas-csv"
                       type="file"
                       accept=".csv"
                       onChange={(e) => handleFileChange(e, 'ide_produk')}
                       disabled={uploading}
-                      className="mt-1"
+                      className="mt-2 border-green-200 focus:border-green-400"
                     />
                   </div>
                   {uploading && (
-                    <div className="text-sm text-gray-600">
-                      Mengupload dan memproses file...
+                    <div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg">
+                      Uploading and processing file...
                     </div>
                   )}
                 </div>
@@ -206,19 +241,30 @@ const AdminPage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="products">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload Produk Digital</CardTitle>
+            <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5" />
+                  Upload Digital Products
+                </CardTitle>
                 <CardDescription>
-                  Fitur ini akan segera hadir untuk mengelola produk digital
+                  This feature will be available soon for managing digital products
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="text-gray-500">
-                  Fungsi upload produk digital akan ditambahkan nanti
+              <CardContent className="pt-6">
+                <div className="text-center py-8">
+                  <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <div className="text-gray-500">
+                    Digital product upload functionality will be added later
+                  </div>
+                  <CSVTemplateDownload type="products" />
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <UserManagement />
           </TabsContent>
         </Tabs>
       </main>

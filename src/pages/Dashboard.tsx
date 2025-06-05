@@ -27,16 +27,16 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-green-600">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  AI Kit Dashboard
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                  Dashboard AI Kit
                 </h1>
-                <p className="text-sm text-gray-600">Welcome, {profile?.username}</p>
+                <p className="text-sm text-gray-600">Selamat datang, {profile?.username}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -44,10 +44,10 @@ const Dashboard: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={() => navigate('/admin')}
-                  className="flex items-center gap-2 border-purple-200 hover:bg-purple-50"
+                  className="flex items-center gap-2 border-green-200 hover:bg-green-50"
                 >
                   <Shield className="w-4 h-4" />
-                  Admin Panel
+                  Panel Admin
                 </Button>
               )}
               <Button 
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
                 className="flex items-center gap-2 border-red-200 hover:bg-red-50 hover:text-red-600"
               >
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                Keluar
               </Button>
             </div>
           </div>
@@ -81,15 +81,15 @@ const Dashboard: React.FC = () => {
             <TabsList className="grid w-full grid-cols-3 bg-white/50 backdrop-blur-sm">
               <TabsTrigger value="prompts" className="flex items-center gap-2">
                 <FileText className="w-4 h-4" />
-                Prompts
+                Prompt
               </TabsTrigger>
               <TabsTrigger value="ideas" className="flex items-center gap-2">
                 <Lightbulb className="w-4 h-4" />
-                Product Ideas
+                Ide Produk
               </TabsTrigger>
               <TabsTrigger value="products" className="flex items-center gap-2">
                 <Package className="w-4 h-4" />
-                Digital Products
+                Produk Digital
               </TabsTrigger>
             </TabsList>
             

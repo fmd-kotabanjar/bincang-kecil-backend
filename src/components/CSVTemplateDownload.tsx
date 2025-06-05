@@ -63,10 +63,10 @@ const CSVTemplateDownload: React.FC<CSVTemplateDownloadProps> = ({ type }) => {
       variant="outline"
       size="sm"
       onClick={generateCSVTemplate}
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 border-blue-200 hover:bg-blue-50"
     >
       <Download className="w-4 h-4" />
-      Download Template {getTypeLabel()}
+      Unduh Template {getTypeLabel()}
     </Button>
   );
 };

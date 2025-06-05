@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin = false }) => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, isAdmin } = useAuth();
 
   if (loading) {
     return (
@@ -19,12 +19,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
     );
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (requireAdmin && profile?.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
+  if (requireAdmin) {
+    // Untuk admin route, cek apakah user adalah admin default atau user dengan role admin
+    if (!isAdmin && (profile?.role !== 'admin')) {
+      return <Navigate to="/admin-login" replace />;
+    }
+  } else {
+    // Untuk route biasa, tetap perlu login user
+    if (!user) {
+      return <Navigate to="/login" replace />;
+    }
   }
 
   return <>{children}</>;

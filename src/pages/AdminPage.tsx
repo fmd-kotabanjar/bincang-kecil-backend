@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -11,17 +10,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 
 const AdminPage: React.FC = () => {
-  const { profile } = useAuth();
+  const { profile, isAdmin, adminLogout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
 
+  // Check if user has admin access (either default admin or user with admin role)
+  const hasAdminAccess = isAdmin || profile?.role === 'admin';
+
   // Redirect if not admin
   React.useEffect(() => {
-    if (profile && profile.role !== 'admin') {
+    if (!hasAdminAccess) {
+      navigate('/admin-login');
+    }
+  }, [hasAdminAccess, navigate]);
+
+  const handleLogout = () => {
+    if (isAdmin) {
+      adminLogout();
+      navigate('/');
+    } else {
       navigate('/dashboard');
     }
-  }, [profile, navigate]);
+  };
 
   const handleCSVUpload = async (file: File, contentType: 'prompts' | 'ide_produk') => {
     if (!file) return;
@@ -45,7 +56,6 @@ const AdminPage: React.FC = () => {
           }
         });
 
-        // Ensure required fields
         if (contentType === 'prompts') {
           row.is_published = row.is_published === 'true' || row.is_published === '1' || true;
         } else if (contentType === 'ide_produk') {
@@ -94,7 +104,7 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  if (profile?.role !== 'admin') {
+  if (!hasAdminAccess) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Memuat...</div>
@@ -109,14 +119,18 @@ const AdminPage: React.FC = () => {
           <div className="flex justify-between items-center h-16">
             <div>
               <h1 className="text-xl font-semibold">Panel Admin</h1>
-              <p className="text-sm text-gray-600">Kelola konten dan pengguna</p>
+              <p className="text-sm text-gray-600">
+                {isAdmin ? 'Admin Default' : `Kelola konten dan pengguna - ${profile?.username}`}
+              </p>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/dashboard')}
-            >
-              Kembali ke Dashboard
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+              >
+                {isAdmin ? 'Keluar Admin' : 'Kembali ke Dashboard'}
+              </Button>
+            </div>
           </div>
         </div>
       </header>

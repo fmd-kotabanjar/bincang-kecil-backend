@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
@@ -23,13 +22,19 @@ interface AuthContextType {
   permissions: UserPermission[];
   session: Session | null;
   loading: boolean;
+  isAdmin: boolean;
   signUp: (email: string, password: string, username: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  adminLogin: (password: string) => Promise<boolean>;
+  adminLogout: () => void;
   refreshPermissions: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Default admin password - dalam production, ini harus lebih aman
+const ADMIN_PASSWORD = 'admin123';
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -45,6 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [permissions, setPermissions] = useState<UserPermission[]>([]);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -93,6 +99,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await fetchProfile(user.id);
     }
   };
+
+  // Admin login function
+  const adminLogin = async (password: string): Promise<boolean> => {
+    if (password === ADMIN_PASSWORD) {
+      setIsAdmin(true);
+      localStorage.setItem('isAdmin', 'true');
+      console.log('Admin login successful');
+      return true;
+    }
+    return false;
+  };
+
+  // Admin logout function
+  const adminLogout = () => {
+    setIsAdmin(false);
+    localStorage.removeItem('isAdmin');
+    console.log('Admin logout successful');
+  };
+
+  // Check admin status on mount
+  useEffect(() => {
+    const adminStatus = localStorage.getItem('isAdmin');
+    if (adminStatus === 'true') {
+      setIsAdmin(true);
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -199,6 +231,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log('Sign out successful');
     setProfile(null);
     setPermissions([]);
+    
+    // Also logout admin if logged in
+    adminLogout();
   };
 
   const value = {
@@ -207,9 +242,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     permissions,
     session,
     loading,
+    isAdmin,
     signUp,
     signIn,
     signOut,
+    adminLogin,
+    adminLogout,
     refreshPermissions
   };
 

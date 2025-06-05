@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,7 @@ const Index = () => {
           Bergabunglah dengan komunitas kami dan tingkatkan kreativitas Anda.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           {user ? (
             <Link to="/dashboard">
               <Button size="lg" className="w-full sm:w-auto">
@@ -39,6 +38,11 @@ const Index = () => {
               </Link>
             </>
           )}
+          <Link to="/admin-login">
+            <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+              Admin
+            </Button>
+          </Link>
         </div>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
-import { Upload, Users, FileText, Lightbulb, Package, Shield, Settings, ArrowLeft, Crown } from 'lucide-react';
+import { Upload, Users, FileText, Lightbulb, Package, Shield, Settings, ArrowLeft, Database } from 'lucide-react';
 import CSVTemplateDownload from '@/components/CSVTemplateDownload';
 import UserManagement from '@/components/UserManagement';
 
@@ -108,205 +108,185 @@ const AdminPage: React.FC = () => {
 
   if (!hasAdminAccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-blue-900">
-        <div className="text-lg text-white">Memuat...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-lg text-gray-600">Memuat...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50">
-      {/* Header Admin dengan desain mewah */}
-      <header className="bg-gradient-to-r from-slate-800 to-blue-900 shadow-2xl border-b border-blue-800/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-r from-yellow-500 to-orange-600 shadow-xl">
-                <Crown className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Google-style Admin Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex items-center">
+                <div className="w-8 h-8 rounded bg-gradient-to-r from-red-500 to-blue-500 flex items-center justify-center mr-3">
+                  <Shield className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-xl font-normal text-gray-900">Admin Panel</span>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <Shield className="w-6 h-6" />
-                  Panel Admin
-                </h1>
-                <p className="text-blue-200 text-sm">
-                  {isAdmin ? 'Admin Default' : `Manajemen Konten & Pengguna - ${profile?.username}`}
-                </p>
+              <div className="ml-4 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">
+                {isAdmin ? 'Super Admin' : 'Admin'}
               </div>
             </div>
+            
             <div className="flex items-center space-x-4">
               <Button
-                variant="outline"
+                variant="ghost"
+                size="sm"
                 onClick={handleLogout}
-                className="border-blue-300 text-white hover:bg-blue-700 bg-blue-800/50 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+                className="flex items-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                {isAdmin ? 'Keluar Admin' : 'Kembali ke Dashboard'}
+                {isAdmin ? 'Keluar Admin' : 'Kembali'}
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-10">
-        {/* Welcome Admin Card */}
-        <Card className="mb-10 bg-gradient-to-r from-blue-600 to-green-600 text-white border-0 shadow-2xl">
-          <CardHeader className="pb-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
-                <Settings className="w-8 h-8" />
-              </div>
-              <div>
-                <CardTitle className="text-3xl font-bold mb-2">Panel Administrasi 🛠️</CardTitle>
-                <CardDescription className="text-blue-100 text-lg">
-                  Kelola konten, pengguna, dan pengaturan sistem
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Admin Welcome */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-normal text-gray-900 mb-2">
+            Panel Administrasi
+          </h1>
+          <p className="text-gray-600">
+            Kelola konten, pengguna, dan pengaturan sistem AI Kit
+          </p>
+        </div>
 
         {/* Admin Tabs */}
-        <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
-          <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg border-b">
-            <CardTitle className="text-2xl text-gray-800 flex items-center gap-3">
-              <Settings className="w-6 h-6 text-blue-600" />
-              Manajemen Sistem
-            </CardTitle>
-            <CardDescription className="text-gray-600">
-              Kelola semua aspek platform AI Kit dari satu tempat
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-8">
-            <Tabs defaultValue="prompts" className="space-y-8">
-              <TabsList className="grid w-full grid-cols-4 bg-gray-100/80 backdrop-blur-sm h-16 rounded-xl p-2">
-                <TabsTrigger value="prompts" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg font-medium text-sm px-4 py-3">
-                  <FileText className="w-5 h-5" />
+        <Card className="border border-gray-200 shadow-sm">
+          <CardContent className="p-0">
+            <Tabs defaultValue="prompts" className="w-full">
+              <TabsList className="w-full justify-start border-b border-gray-200 bg-white rounded-none h-auto p-0">
+                <TabsTrigger 
+                  value="prompts" 
+                  className="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white rounded-none"
+                >
+                  <FileText className="w-4 h-4" />
                   Prompts
                 </TabsTrigger>
-                <TabsTrigger value="ideas" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg font-medium text-sm px-4 py-3">
-                  <Lightbulb className="w-5 h-5" />
+                <TabsTrigger 
+                  value="ideas" 
+                  className="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white rounded-none"
+                >
+                  <Lightbulb className="w-4 h-4" />
                   Ide Produk
                 </TabsTrigger>
-                <TabsTrigger value="products" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg font-medium text-sm px-4 py-3">
-                  <Package className="w-5 h-5" />
+                <TabsTrigger 
+                  value="products" 
+                  className="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white rounded-none"
+                >
+                  <Package className="w-4 h-4" />
                   Produk
                 </TabsTrigger>
-                <TabsTrigger value="users" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg font-medium text-sm px-4 py-3">
-                  <Users className="w-5 h-5" />
+                <TabsTrigger 
+                  value="users" 
+                  className="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white rounded-none"
+                >
+                  <Users className="w-4 h-4" />
                   Pengguna
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="prompts">
-                <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-50 to-blue-100">
-                  <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-lg">
-                    <CardTitle className="flex items-center gap-3 text-xl">
-                      <Upload className="w-6 h-6" />
-                      Upload Prompt dari CSV
-                    </CardTitle>
-                    <CardDescription className="text-blue-100">
-                      Format: judul_konten, deskripsi_konten, required_permission_key, is_published
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-8 space-y-6">
+              <div className="p-6">
+                <TabsContent value="prompts" className="mt-0">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Prompt dari CSV</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Format: judul_konten, deskripsi_konten, required_permission_key, is_published
+                      </p>
+                    </div>
+                    
                     <div className="flex justify-between items-center">
                       <CSVTemplateDownload type="prompts" />
                     </div>
+                    
                     <div>
-                      <Label htmlFor="prompts-csv" className="text-sm font-semibold text-gray-700 mb-3 block">File CSV Prompt</Label>
+                      <Label htmlFor="prompts-csv" className="text-sm font-medium text-gray-700">
+                        File CSV Prompt
+                      </Label>
                       <Input
                         id="prompts-csv"
                         type="file"
                         accept=".csv"
                         onChange={(e) => handleFileChange(e, 'prompts')}
                         disabled={uploading}
-                        className="border-blue-200 focus:border-blue-500 bg-white shadow-sm hover:shadow-md transition-all duration-200"
+                        className="mt-1"
                       />
                     </div>
+                    
                     {uploading && (
-                      <div className="text-sm text-blue-700 bg-blue-100 p-4 rounded-xl border border-blue-200">
+                      <div className="text-sm text-blue-700 bg-blue-50 p-4 rounded-md border border-blue-200">
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                           Mengunggah dan memproses file...
                         </div>
                       </div>
                     )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                  </div>
+                </TabsContent>
 
-              <TabsContent value="ideas">
-                <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-emerald-100">
-                  <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-t-lg">
-                    <CardTitle className="flex items-center gap-3 text-xl">
-                      <Upload className="w-6 h-6" />
-                      Upload Ide Produk dari CSV
-                    </CardTitle>
-                    <CardDescription className="text-green-100">
-                      Format: judul_konten, deskripsi_konten, required_permission_key, is_published
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-8 space-y-6">
+                <TabsContent value="ideas" className="mt-0">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Ide Produk dari CSV</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Format: judul_konten, deskripsi_konten, required_permission_key, is_published
+                      </p>
+                    </div>
+                    
                     <div className="flex justify-between items-center">
                       <CSVTemplateDownload type="ideas" />
                     </div>
+                    
                     <div>
-                      <Label htmlFor="ideas-csv" className="text-sm font-semibold text-gray-700 mb-3 block">File CSV Ide Produk</Label>
+                      <Label htmlFor="ideas-csv" className="text-sm font-medium text-gray-700">
+                        File CSV Ide Produk
+                      </Label>
                       <Input
                         id="ideas-csv"
                         type="file"
                         accept=".csv"
                         onChange={(e) => handleFileChange(e, 'ide_produk')}
                         disabled={uploading}
-                        className="border-green-200 focus:border-green-500 bg-white shadow-sm hover:shadow-md transition-all duration-200"
+                        className="mt-1"
                       />
                     </div>
+                    
                     {uploading && (
-                      <div className="text-sm text-green-700 bg-green-100 p-4 rounded-xl border border-green-200">
+                      <div className="text-sm text-green-700 bg-green-50 p-4 rounded-md border border-green-200">
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
                           Mengunggah dan memproses file...
                         </div>
                       </div>
                     )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="products">
-                <Card className="shadow-lg border-0 bg-gradient-to-br from-purple-50 to-pink-100">
-                  <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-700 text-white rounded-t-lg">
-                    <CardTitle className="flex items-center gap-3 text-xl">
-                      <Package className="w-6 h-6" />
-                      Upload Produk Digital
-                    </CardTitle>
-                    <CardDescription className="text-purple-100">
-                      Fitur ini akan segera tersedia untuk mengelola produk digital
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-8">
-                    <div className="text-center py-12">
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center mx-auto mb-6">
-                        <Package className="w-10 h-10 text-purple-600" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-700 mb-2">Segera Hadir!</h3>
-                      <div className="text-gray-500 mb-6">
-                        Fitur upload produk digital akan ditambahkan dalam update mendatang
-                      </div>
-                      <CSVTemplateDownload type="products" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="users">
-                <div className="bg-gradient-to-br from-orange-50 to-red-100 rounded-xl p-1">
-                  <div className="bg-white rounded-lg">
-                    <UserManagement />
                   </div>
-                </div>
-              </TabsContent>
+                </TabsContent>
+
+                <TabsContent value="products" className="mt-0">
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                      <Package className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Segera Hadir!</h3>
+                    <p className="text-gray-600 mb-6">
+                      Fitur upload produk digital akan ditambahkan dalam update mendatang
+                    </p>
+                    <CSVTemplateDownload type="products" />
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="users" className="mt-0">
+                  <UserManagement />
+                </TabsContent>
+              </div>
             </Tabs>
           </CardContent>
         </Card>

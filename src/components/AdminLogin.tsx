@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { Shield, ArrowLeft } from 'lucide-react';
+import { Shield, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 interface AdminLoginProps {
   onAdminLogin: (password: string) => Promise<boolean>;
@@ -14,6 +14,7 @@ interface AdminLoginProps {
 
 const AdminLogin: React.FC<AdminLoginProps> = ({ onAdminLogin }) => {
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -50,52 +51,73 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onAdminLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%234285F4%22%20fill-opacity%3D%220.05%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
-      
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-green-500 mx-auto mb-4">
-            <Shield className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-red-600" />
           </div>
-          <CardTitle className="text-white text-2xl">Login Admin</CardTitle>
-          <CardDescription className="text-gray-300">
+          <h1 className="text-2xl font-normal text-gray-900 mb-2">
+            Login Admin
+          </h1>
+          <p className="text-sm text-gray-600">
             Masukkan password admin untuk mengakses panel kontrol
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="password" className="text-white font-medium">Password Admin</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Masukkan password admin"
-                required
-                className="mt-2 bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-blue-400"
-              />
-            </div>
-            <Button 
-              type="submit" 
-              className="w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white border-0 py-3 text-lg font-semibold rounded-xl" 
-              disabled={loading}
-            >
-              {loading ? 'Memverifikasi...' : 'Akses Panel Admin'}
-            </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm py-3 rounded-xl"
-              onClick={() => navigate('/')}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Kembali ke Beranda
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </p>
+        </div>
+
+        <Card className="border border-gray-200 shadow-sm">
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                  Password Admin
+                </Label>
+                <div className="relative mt-1">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Masukkan password admin"
+                    required
+                    className="block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => navigate('/')}
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Kembali
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  disabled={loading}
+                >
+                  {loading ? 'Memverifikasi...' : 'Akses Admin'}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

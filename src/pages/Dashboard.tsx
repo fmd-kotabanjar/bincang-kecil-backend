@@ -10,7 +10,7 @@ import AccessibleIdeasList from '@/components/AccessibleIdeasList';
 import AccessibleDigitalProductsList from '@/components/AccessibleDigitalProductsList';
 import PromptRequestForm from '@/components/PromptRequestForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, Lightbulb, Package, LogOut, Shield, Sparkles, User } from 'lucide-react';
+import { FileText, Lightbulb, Package, LogOut, Shield, User, Menu, Search, Settings } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const Dashboard: React.FC = () => {
@@ -23,165 +23,163 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50">
-      {/* Header dengan desain modern */}
-      <header className="bg-white/90 backdrop-blur-xl shadow-lg border-b border-blue-100/50 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-green-600 shadow-lg">
-                <Sparkles className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-                  AI Kit Dashboard
-                </h1>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <User className="w-4 h-4" />
-                  <span>Selamat datang, {profile?.username}</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Google-style Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex items-center">
+                <div className="w-8 h-8 rounded bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center mr-3">
+                  <span className="text-white font-bold text-sm">AI</span>
                 </div>
+                <span className="text-xl font-normal text-gray-900">AI Kit</span>
               </div>
             </div>
+            
             <div className="flex items-center space-x-4">
+              <div className="hidden md:flex items-center space-x-2 text-sm text-gray-700">
+                <User className="w-4 h-4" />
+                <span>{profile?.username}</span>
+              </div>
+              
               {profile?.role === 'admin' && (
                 <Button
                   variant="outline"
+                  size="sm"
                   onClick={() => navigate('/admin')}
-                  className="flex items-center gap-2 border-green-200 hover:bg-green-50 bg-white shadow-md hover:shadow-lg transition-all duration-200"
+                  className="hidden md:flex items-center gap-2"
                 >
                   <Shield className="w-4 h-4" />
-                  Panel Admin
+                  Admin
                 </Button>
               )}
-              <Button 
-                variant="outline" 
+              
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleSignOut}
-                className="flex items-center gap-2 border-red-200 hover:bg-red-50 hover:text-red-600 bg-white shadow-md hover:shadow-lg transition-all duration-200"
+                className="flex items-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
-                Keluar
+                <span className="hidden md:inline">Keluar</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-10">
-        {/* Welcome Card */}
-        <Card className="mb-10 bg-gradient-to-r from-blue-600 to-green-600 text-white border-0 shadow-2xl">
-          <CardHeader className="pb-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
-                <Sparkles className="w-8 h-8" />
-              </div>
-              <div>
-                <CardTitle className="text-3xl font-bold mb-2">Hai, {profile?.username}! 👋</CardTitle>
-                <CardDescription className="text-blue-100 text-lg">
-                  Siap untuk mengeksplorasi konten AI premium hari ini?
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Action Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <div className="animate-fade-in">
-            <Card className="h-full shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <CardHeader className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-t-lg">
-                <CardTitle className="text-blue-800 flex items-center gap-2">
-                  <Package className="w-5 h-5" />
-                  Tukar Kode Akses
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <RedeemCodeForm />
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-            <Card className="h-full shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <CardHeader className="bg-gradient-to-br from-green-50 to-green-100 rounded-t-lg">
-                <CardTitle className="text-green-800 flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  Izin Akses Anda
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <UserPermissionsDisplay />
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="animate-fade-in" style={{ animationDelay: '200ms' }}>
-            <Card className="h-full shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <CardHeader className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-t-lg">
-                <CardTitle className="text-purple-800 flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  Minta Prompt Khusus
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <PromptRequestForm />
-              </CardContent>
-            </Card>
-          </div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-normal text-gray-900 mb-2">
+            Selamat datang, {profile?.username}
+          </h1>
+          <p className="text-gray-600">
+            Kelola konten AI premium dan akses sumber daya eksklusif Anda
+          </p>
         </div>
 
-        {/* Content Tabs */}
-        <div className="animate-fade-in" style={{ animationDelay: '300ms' }}>
-          <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg border-b">
-              <CardTitle className="text-2xl text-gray-800 flex items-center gap-3">
-                <Sparkles className="w-6 h-6 text-blue-600" />
-                Konten Premium Anda
+        {/* Quick Actions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                <Package className="w-5 h-5 text-blue-600" />
+                Tukar Kode Akses
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Jelajahi koleksi lengkap prompt AI, ide produk, dan sumber daya digital
+                Masukkan kode untuk mengakses konten premium
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-8">
-              <Tabs defaultValue="prompts" className="space-y-8">
-                <TabsList className="grid w-full grid-cols-3 bg-gray-100/80 backdrop-blur-sm h-14 rounded-xl p-2">
-                  <TabsTrigger 
-                    value="prompts" 
-                    className="flex items-center gap-3 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg font-medium text-sm px-6 py-3"
-                  >
-                    <FileText className="w-5 h-5" />
-                    <span>Prompt AI</span>
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="ideas" 
-                    className="flex items-center gap-3 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg font-medium text-sm px-6 py-3"
-                  >
-                    <Lightbulb className="w-5 h-5" />
-                    <span>Ide Produk</span>
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="products" 
-                    className="flex items-center gap-3 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg font-medium text-sm px-6 py-3"
-                  >
-                    <Package className="w-5 h-5" />
-                    <span>Produk Digital</span>
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="prompts" className="mt-8">
-                  <AccessiblePromptsList />
-                </TabsContent>
-                
-                <TabsContent value="ideas" className="mt-8">
-                  <AccessibleIdeasList />
-                </TabsContent>
-                
-                <TabsContent value="products" className="mt-8">
-                  <AccessibleDigitalProductsList />
-                </TabsContent>
-              </Tabs>
+            <CardContent>
+              <RedeemCodeForm />
+            </CardContent>
+          </Card>
+          
+          <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-green-600" />
+                Izin Akses
+              </CardTitle>
+              <CardDescription className="text-gray-600">
+                Lihat status dan level akses Anda
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <UserPermissionsDisplay />
+            </CardContent>
+          </Card>
+          
+          <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-red-600" />
+                Permintaan Khusus
+              </CardTitle>
+              <CardDescription className="text-gray-600">
+                Minta prompt atau konten yang disesuaikan
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PromptRequestForm />
             </CardContent>
           </Card>
         </div>
+
+        {/* Content Tabs */}
+        <Card className="border border-gray-200 shadow-sm">
+          <CardHeader className="border-b border-gray-200">
+            <CardTitle className="text-xl font-medium text-gray-900">
+              Konten Premium Anda
+            </CardTitle>
+            <CardDescription className="text-gray-600">
+              Jelajahi koleksi prompt AI, ide produk, dan sumber daya digital
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Tabs defaultValue="prompts" className="w-full">
+              <TabsList className="w-full justify-start border-b border-gray-200 bg-white rounded-none h-auto p-0">
+                <TabsTrigger 
+                  value="prompts" 
+                  className="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white rounded-none"
+                >
+                  <FileText className="w-4 h-4" />
+                  Prompt AI
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="ideas" 
+                  className="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white rounded-none"
+                >
+                  <Lightbulb className="w-4 h-4" />
+                  Ide Produk
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="products" 
+                  className="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white rounded-none"
+                >
+                  <Package className="w-4 h-4" />
+                  Produk Digital
+                </TabsTrigger>
+              </TabsList>
+              
+              <div className="p-6">
+                <TabsContent value="prompts" className="mt-0">
+                  <AccessiblePromptsList />
+                </TabsContent>
+                
+                <TabsContent value="ideas" className="mt-0">
+                  <AccessibleIdeasList />
+                </TabsContent>
+                
+                <TabsContent value="products" className="mt-0">
+                  <AccessibleDigitalProductsList />
+                </TabsContent>
+              </div>
+            </Tabs>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
